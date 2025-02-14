@@ -40,7 +40,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.Phone).HasColumnName("phone").HasColumnType("NUMERIC");
             entity.Property(e => e.Email).HasColumnName("email").HasColumnType("TEXT").HasMaxLength(100);
             entity.Property(e => e.Address).HasColumnName("address").HasColumnType("TEXT").HasMaxLength(255);
-            entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("NUMERIC").HasDefaultValue("DATETIME('now')");
+            entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("NUMERIC").HasDefaultValueSql("DATETIME('now')");
         });
 
     }
