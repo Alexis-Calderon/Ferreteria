@@ -33,7 +33,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
 
         modelBuilder.Entity<Client>(entity =>
         {
-            entity.ToTable("client","ferreteria");
+            entity.ToTable("client", "ferreteria");
             entity.HasKey(e => e.IdClient);
             entity.Property(e => e.FirstName).HasColumnName("first_name").HasColumnType("TEXT").HasMaxLength(50).IsRequired();
             entity.Property(e => e.LastName).HasColumnName("last_name").HasColumnType("TEXT").HasMaxLength(50);
