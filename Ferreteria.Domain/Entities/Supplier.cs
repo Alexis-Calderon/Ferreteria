@@ -1,8 +1,8 @@
 using System;
 
-namespace FerreteriaDominio.Entidades;
+namespace Ferreteria.Domain.Entities;
 
-public class Proveedor
+public class Supplier
 {
     public int IdProveedor { get; set; }
     public string Nombre { get; set; } = null!;
