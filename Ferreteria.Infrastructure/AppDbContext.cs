@@ -52,7 +52,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.JobPosition).HasColumnName("job_position").HasColumnType("TEXT").HasMaxLength(20);
             entity.Property(e => e.Phone).HasColumnName("phone").HasColumnType("TEXT").HasMaxLength(15);
             entity.Property(e => e.Email).HasColumnName("email").HasColumnType("TEXT").HasMaxLength(100);
-            entity.Property(e => e.HiringDate).HasColumnName("hiring_date").HasColumnType("TEXT");
+            entity.Property(e => e.HiringDate).HasColumnName("hiring_date").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
         });
     }
 }
