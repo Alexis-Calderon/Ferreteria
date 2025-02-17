@@ -48,6 +48,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
         modelBuilder.Entity<Employee>(entity => {
             entity.ToTable("employee", "ferreteria");   
             entity.HasKey(e => e.IdEmployee);
+            entity.Property(e => e.IdEmployee).HasColumnName("id_employee").ValueGeneratedOnAdd().IsRequired();
             entity.Property(e => e.FirstName).HasColumnName("first_name").HasColumnType("TEXT").HasMaxLength(30).IsRequired();
             entity.Property(e => e.LastName).HasColumnName("last_name").HasColumnType("TEXT").HasMaxLength(30);
             entity.Property(e => e.JobPosition).HasColumnName("job_position").HasColumnType("TEXT").HasMaxLength(20);
