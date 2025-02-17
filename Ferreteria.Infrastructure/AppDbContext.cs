@@ -27,7 +27,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
         {
             entity.ToTable("category", "ferreteria");
             entity.HasKey(e => e.IdCategory);
-            entity.Property(e => e.IdCategory).ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.IdCategory).HasColumnName("id_category").ValueGeneratedOnAdd().IsRequired();
             entity.Property(e => e.Name).HasColumnName("name").HasColumnType("TEXT").HasMaxLength(100).IsRequired();
             entity.Property(e => e.Description).HasColumnName("description").HasColumnType("TEXT").HasMaxLength(255).IsRequired();
         });
