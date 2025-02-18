@@ -20,6 +20,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
     public DbSet<Category> Categories { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Inventory> Inventories { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -55,6 +56,15 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.Phone).HasColumnName("phone").HasColumnType("TEXT").HasMaxLength(15);
             entity.Property(e => e.Email).HasColumnName("email").HasColumnType("TEXT").HasMaxLength(100);
             entity.Property(e => e.HiringDate).HasColumnName("hiring_date").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
+        });
+
+        modelBuilder.Entity<Inventory>(entity => {
+            entity.ToTable("inventory", "ferreteria");
+            entity.HasKey(e => e.IdInventory);
+            entity.Property(e => e.IdInventory).HasColumnName("id_inventory").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.CurrentStock).HasColumnName("current_stock").HasColumnName("INTEGER").IsRequired();
+            entity.Property(e => e.UpdatedAt).HasColumnName("update_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
         });
     }
 }
