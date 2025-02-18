@@ -48,8 +48,9 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
         });
 
-        modelBuilder.Entity<Employee>(entity => {
-            entity.ToTable("employee", "ferreteria");   
+        modelBuilder.Entity<Employee>(entity =>
+        {
+            entity.ToTable("employee", "ferreteria");
             entity.HasKey(e => e.IdEmployee);
             entity.Property(e => e.IdEmployee).HasColumnName("id_employee").ValueGeneratedOnAdd().IsRequired();
             entity.Property(e => e.FirstName).HasColumnName("first_name").HasColumnType("TEXT").HasMaxLength(30).IsRequired();
@@ -60,7 +61,8 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.HiringDate).HasColumnName("hiring_date").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
         });
 
-        modelBuilder.Entity<Inventory>(entity => {
+        modelBuilder.Entity<Inventory>(entity =>
+        {
             entity.ToTable("inventory", "ferreteria");
             entity.HasKey(e => e.IdInventory);
             entity.Property(e => e.IdInventory).HasColumnName("id_inventory").ValueGeneratedOnAdd().IsRequired();
@@ -69,18 +71,20 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.UpdatedAt).HasColumnName("update_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
         });
 
-        modelBuilder.Entity<InventoryMovement>(entity => {
+        modelBuilder.Entity<InventoryMovement>(entity =>
+        {
             entity.ToTable("inventory_movement", "ferreteria");
             entity.HasKey(e => e.IdInventoryMovement);
             entity.Property(e => e.IdInventoryMovement).HasColumnName("id_inventory_movement").ValueGeneratedOnAdd().IsRequired();
             entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.MovementType).HasColumnName("movement_type").HasColumnType("TEXT").HasMaxLength(20).IsRequired();
-            entity.Property(e =>e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.MovementDate).HasColumnName("movement_date").HasColumnType("TEXT").IsRequired();
-            entity.Property(e =>e.Reference).HasColumnName("reference").HasColumnType("TEXT").HasMaxLength(50);
+            entity.Property(e => e.Reference).HasColumnName("reference").HasColumnType("TEXT").HasMaxLength(50);
         });
 
-        modelBuilder.Entity<Product>(entity => {
+        modelBuilder.Entity<Product>(entity =>
+        {
             entity.ToTable("product", "ferreteria");
             entity.HasKey(e => e.IdProduct);
             entity.Property(e => e.IdProduct).HasColumnName("id_product").ValueGeneratedOnAdd().IsRequired();
