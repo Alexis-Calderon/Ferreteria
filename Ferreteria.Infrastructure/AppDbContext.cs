@@ -21,6 +21,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
     public DbSet<Client> Clients { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Inventory> Inventories { get; set; }
+    public DbSet<InventoryMovement> InventoryMovements { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,6 +66,17 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.CurrentStock).HasColumnName("current_stock").HasColumnName("INTEGER").IsRequired();
             entity.Property(e => e.UpdatedAt).HasColumnName("update_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
+        });
+
+        modelBuilder.Entity<InventoryMovement>(entity => {
+            entity.ToTable("inventory_movement", "ferreteria");
+            entity.HasKey(e => e.IdInventoryMovement);
+            entity.Property(e => e.IdInventoryMovement).HasColumnName("id_inventory_movement").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.MovementType).HasColumnName("movement_type").HasColumnType("TEXT").HasMaxLength(20).IsRequired();
+            entity.Property(e =>e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.MovementDate).HasColumnName("movement_date").HasColumnType("TEXT").IsRequired();
+            entity.Property(e =>e.Reference).HasColumnName("reference").HasColumnType("TEXT").HasMaxLength(50);
         });
     }
 }
