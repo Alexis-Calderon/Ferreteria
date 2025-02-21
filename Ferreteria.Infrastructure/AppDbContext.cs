@@ -23,6 +23,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
     public DbSet<Inventory> Inventories { get; set; }
     public DbSet<InventoryMovement> InventoryMovements { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<Purchase> Purchases { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -97,6 +98,17 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.MeasurementUnit).HasColumnName("measurement_unit").HasColumnType("TEXT").HasMaxLength(10);
             entity.Property(e => e.IdSupplier).HasColumnName("id_supplier").HasColumnType("INTEGER");
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
+        });
+
+        modelBuilder.Entity<Purchase>(entity =>
+        {
+            entity.ToTable("purchase", "ferreteria");
+            entity.HasKey(e => e.IdPurchase);
+            entity.Property(e => e.IdPurchase).HasColumnName("id_purchase").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.IdSupplier).HasColumnName("id_supplier").HasColumnType("INTEGER");
+            entity.Property(e => e.IdEmployee).HasColumnName("id_employee").HasColumnType("INTEGER");
+            entity.Property(e => e.Total).HasColumnName("total").HasColumnType("NUMERIC");
+            entity.Property(e => e.PurchaseDate).HasColumnName("purchase_date").HasColumnType("TEXT").IsRequired();
         });
     }
 }
