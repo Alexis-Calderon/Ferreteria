@@ -26,6 +26,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
     public DbSet<Purchase> Purchases { get; set; }
     public DbSet<PurchaseProduct> PurchaseProducts { get; set; }
     public DbSet<Sale> Sales { get; set; }
+    public DbSet<SaleProduct> SaleProducts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -134,6 +135,18 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.IdEmployee).HasColumnName("id_employee").HasColumnType("INTEGER");
             entity.Property(e => e.Total).HasColumnName("total").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.SaleDate).HasColumnName("sale_date").HasColumnType("TEXT").IsRequired();
+        });
+
+        modelBuilder.Entity<SaleProduct>(entity =>
+        {
+            entity.ToTable("sale_product", "ferreteria");
+            entity.HasKey(e => e.IdSaleProduct);
+            entity.Property(e => e.IdSaleProduct).HasColumnName("id_sale_product").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.IdSale).HasColumnName("id_sale").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.UnitPrice).HasColumnName("unit_price").HasColumnType("NUMERIC").IsRequired();
+            entity.Property(e => e.Subtotal).HasColumnName("subtotal").HasColumnType("NUMERIC").IsRequired();
         });
     }
 }
