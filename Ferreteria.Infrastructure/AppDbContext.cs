@@ -27,6 +27,7 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
     public DbSet<PurchaseProduct> PurchaseProducts { get; set; }
     public DbSet<Sale> Sales { get; set; }
     public DbSet<SaleProduct> SaleProducts { get; set; }
+    public DbSet<Supplier> Suppliers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -147,6 +148,17 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.UnitPrice).HasColumnName("unit_price").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.Subtotal).HasColumnName("subtotal").HasColumnType("NUMERIC").IsRequired();
+        });
+
+        modelBuilder.Entity<Supplier>(entity =>
+        {
+            entity.ToTable("supplier", "ferreteria");
+            entity.HasKey(e => e.IdSupplier);
+            entity.Property(e => e.IdSupplier).HasColumnName("id_supplier").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.Name).HasColumnName("name").HasColumnType("TEXT").HasMaxLength(100).IsRequired();
+            entity.Property(e => e.Phone).HasColumnName("phone").HasColumnType("TEXT").HasMaxLength(15);
+            entity.Property(e => e.Email).HasColumnName("email").HasColumnType("TEXT").HasMaxLength(100);
+            entity.Property(e => e.Address).HasColumnName("address").HasColumnType("TEXT").HasMaxLength(255);
         });
     }
 }
