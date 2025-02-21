@@ -4,10 +4,10 @@ namespace Ferreteria.Domain.Entities;
 
 public class Supplier
 {
-    public int IdProveedor { get; set; }
-    public string Nombre { get; set; } = null!;
-    public string? Contacto { get; set; }
-    public string? Telefono { get; set; }
+    public int IdSupplier { get; set; }
+    public string Name { get; set; } = null!;
+    public string? Contact { get; set; }
+    public string? Phone { get; set; }
     public string? Email { get; set; }
-    public string? Direccion { get; set; }
+    public string? Address { get; set; }
 }
