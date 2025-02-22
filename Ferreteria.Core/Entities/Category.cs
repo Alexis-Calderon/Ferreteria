@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 
-namespace Ferreteria.Domain.Entities;
+namespace Ferreteria.Core.Entities;
 
 public class Category
 {
     public int IdCategory { get; set; }
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
+
+    public virtual ICollection<Product> Products { get; set; } = [];
 }

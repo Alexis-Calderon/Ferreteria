@@ -1,6 +1,6 @@
 using System;
 
-namespace Ferreteria.Domain.Entities;
+namespace Ferreteria.Core.Entities;
 
 public class SaleProduct
 {
@@ -10,4 +10,7 @@ public class SaleProduct
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public decimal Subtotal { get; set; }
+
+    public virtual Product? IdProductNavigation { get; set; }
+    public virtual Sale? IdSaleNavigation { get; set; }
 }

@@ -1,6 +1,7 @@
 using System;
+using System.Collections.Generic;
 
-namespace Ferreteria.Domain.Entities;
+namespace Ferreteria.Core.Entities;
 
 public class Employee
 {
@@ -11,4 +12,7 @@ public class Employee
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public DateTime? HiringDate { get; set; }
+
+    public virtual ICollection<Purchase> Purchases { get; set; } = [];
+    public virtual ICollection<Sale> Sales { get; set; } = [];
 }

@@ -1,6 +1,7 @@
 using System;
+using System.Collections.Generic;
 
-namespace Ferreteria.Domain.Entities;
+namespace Ferreteria.Core.Entities;
 
 public class Sale
 {
@@ -11,4 +12,8 @@ public class Sale
     public DateTime? SaleDate { get; set; }
     public DateTime? PaymentDate { get; set; }
     public string? PaymentMethod { get; set; }
+
+    public virtual Client? IdClientNavigation { get; set; }
+    public virtual Employee? IdEmployeeNavigation { get; set; }
+    public virtual ICollection<SaleProduct> SaleProducts { get; set; } = [];
 }

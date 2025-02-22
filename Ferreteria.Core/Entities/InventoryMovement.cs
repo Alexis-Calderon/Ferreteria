@@ -1,6 +1,6 @@
 using System;
 
-namespace Ferreteria.Domain.Entities;
+namespace Ferreteria.Core.Entities;
 
 public class InventoryMovement
 {
@@ -10,4 +10,5 @@ public class InventoryMovement
     public int Quantity { get; set; }
     public DateTime MovementDate { get; set; }
     public string? Reference { get; set; }
+    public virtual Product? ProductNavigation { get; set; }
 }

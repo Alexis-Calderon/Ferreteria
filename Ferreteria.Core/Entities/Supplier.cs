@@ -1,6 +1,7 @@
 using System;
+using System.Collections.Generic;
 
-namespace Ferreteria.Domain.Entities;
+namespace Ferreteria.Core.Entities;
 
 public class Supplier
 {
@@ -10,4 +11,8 @@ public class Supplier
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public string? Address { get; set; }
+
+    public virtual ICollection<Product> Products { get; set; } = [];
+    public virtual ICollection<Inventory> Inventories { get; set; } = [];
+    public virtual ICollection<Purchase> Purchases { get; set; } = [];
 }
