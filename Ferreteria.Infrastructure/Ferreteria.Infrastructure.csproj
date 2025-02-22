@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -20,7 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Ferreteria.Domain/Ferreteria.Domain.csproj" />
+    <Folder Include="Repositories/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ferreteria.Core\Ferreteria.Core.csproj" />
   </ItemGroup>
 
 </Project>

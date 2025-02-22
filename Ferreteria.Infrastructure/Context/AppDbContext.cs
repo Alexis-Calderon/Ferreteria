@@ -1,11 +1,11 @@
 using System;
 
-using Ferreteria.Domain.Entities;
+using Ferreteria.Core.Entities;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace Ferreteria.Infrastructure;
+namespace Ferreteria.Infrastructure.Context;
 
 public class AppDbContext(DbContextOptions options, IConfiguration configuration) : DbContext(options)
 {
@@ -74,6 +74,11 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.CurrentStock).HasColumnName("current_stock").HasColumnName("INTEGER").IsRequired();
             entity.Property(e => e.UpdatedAt).HasColumnName("update_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
+
+            entity.HasOne(d => d.ProductNavigation).WithMany(p => p.Inventories)
+                .HasForeignKey(d => d.IdProduct)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_inventory_product");
         });
 
         modelBuilder.Entity<InventoryMovement>(entity =>
@@ -86,6 +91,11 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.MovementDate).HasColumnName("movement_date").HasColumnType("TEXT").IsRequired();
             entity.Property(e => e.Reference).HasColumnName("reference").HasColumnType("TEXT").HasMaxLength(50);
+
+            entity.HasOne(d => d.ProductNavigation).WithMany(p => p.InventoryMovements)
+                .HasForeignKey(d => d.IdProduct)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_inventory_movement_product");
         });
 
         modelBuilder.Entity<Product>(entity =>
@@ -95,13 +105,23 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.IdProduct).HasColumnName("id_product").ValueGeneratedOnAdd().IsRequired();
             entity.Property(e => e.Name).HasColumnName("name").HasColumnType("TEXT").HasMaxLength(100).IsRequired();
             entity.Property(e => e.Description).HasColumnName("description").HasColumnType("TEXT").HasMaxLength(255);
-            entity.Property(e => e.Category).HasColumnName("category").HasColumnType("TEXT").HasMaxLength(100);
+            entity.Property(e => e.IdCategory).HasColumnName("id_category").HasColumnType("INTEGER");
             entity.Property(e => e.Brand).HasColumnName("brand").HasColumnType("TEXT").HasMaxLength(20);
             entity.Property(e => e.Price).HasColumnName("price").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.Stock).HasColumnName("stock").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.MeasurementUnit).HasColumnName("measurement_unit").HasColumnType("TEXT").HasMaxLength(10);
             entity.Property(e => e.IdSupplier).HasColumnName("id_supplier").HasColumnType("INTEGER");
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
+
+            entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.Products)
+                .HasForeignKey(d => d.IdCategory)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_product_category");
+
+            entity.HasOne(d => d.IdSupplierNavigation).WithMany(p => p.Products)
+                .HasForeignKey(d => d.IdSupplier)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_product_supplier");
         });
 
         modelBuilder.Entity<Purchase>(entity =>
@@ -113,6 +133,16 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.IdEmployee).HasColumnName("id_employee").HasColumnType("INTEGER");
             entity.Property(e => e.Total).HasColumnName("total").HasColumnType("NUMERIC");
             entity.Property(e => e.PurchaseDate).HasColumnName("purchase_date").HasColumnType("TEXT").IsRequired();
+
+            entity.HasOne(d => d.IdEmployeeNavigation).WithMany(p => p.Purchases)
+                .HasForeignKey(d => d.IdEmployee)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_purchase_employee");
+
+            entity.HasOne(d => d.IdSupplierNavigation).WithMany(p => p.Purchases)
+                .HasForeignKey(d => d.IdSupplier)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_purchase_supplier");
         });
 
         modelBuilder.Entity<PurchaseProduct>(entity =>
@@ -125,6 +155,16 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.UnitPrice).HasColumnName("unit_price").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.Subtotal).HasColumnName("subtotal").HasColumnType("NUMERIC").IsRequired();
+
+            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.PurchaseProducts)
+                .HasForeignKey(d => d.IdProduct)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_purchase_product_product");
+
+            entity.HasOne(d => d.IdPurchaseNavigation).WithMany(p => p.PurchaseProducts)
+                .HasForeignKey(d => d.IdPurchase)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_purchase_product_purchase");
         });
 
         modelBuilder.Entity<Sale>(entity =>
@@ -136,6 +176,16 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.IdEmployee).HasColumnName("id_employee").HasColumnType("INTEGER");
             entity.Property(e => e.Total).HasColumnName("total").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.SaleDate).HasColumnName("sale_date").HasColumnType("TEXT").IsRequired();
+
+            entity.HasOne(d => d.IdClientNavigation).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.IdClient)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_sale_client");
+
+            entity.HasOne(d => d.IdEmployeeNavigation).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.IdEmployee)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_sale_employee");
         });
 
         modelBuilder.Entity<SaleProduct>(entity =>
@@ -148,6 +198,16 @@ public class AppDbContext(DbContextOptions options, IConfiguration configuration
             entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.UnitPrice).HasColumnName("unit_price").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.Subtotal).HasColumnName("subtotal").HasColumnType("NUMERIC").IsRequired();
+
+            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.SaleProducts)
+                .HasForeignKey(d => d.IdProduct)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_sale_product_product");
+
+            entity.HasOne(d => d.IdSaleNavigation).WithMany(p => p.SaleProducts)
+                .HasForeignKey(d => d.IdSale)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasConstraintName("FK_sale_product_sale");
         });
 
         modelBuilder.Entity<Supplier>(entity =>
