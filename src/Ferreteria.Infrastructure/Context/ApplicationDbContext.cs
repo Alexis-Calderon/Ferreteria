@@ -1,4 +1,5 @@
 using Ferreteria.Core.Entities;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Ferreteria.Infrastructure.Context;
