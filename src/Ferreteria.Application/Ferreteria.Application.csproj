@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../Ferreteria.Core/Ferreteria.Core.csproj" />
+    <ProjectReference Include="../Ferreteria.Domain/Ferreteria.Domain.csproj" />
   </ItemGroup>
 
 </Project>
