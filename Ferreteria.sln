@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{92331237-F817-4CC5-B55B-0C4F995F51E3}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-		.gitignore = .gitignore
-		.gitattributes = .gitattributes
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.Api", "src\Ferreteria.Api\Ferreteria.Api.csproj", "{FE5D0BE2-CA62-4B87-A2EA-05EBB3A3178C}"
 EndProject
@@ -16,7 +11,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.Application", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.Infrastructure", "src\Ferreteria.Infrastructure\Ferreteria.Infrastructure.csproj", "{0E0F290A-D97C-4EEE-B1DC-15151ED94E7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.Core", "src\Ferreteria.Core\Ferreteria.Core.csproj", "{0C413D25-49F1-4CDF-B2B1-D9D43EF7FD5D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.Domain", "src\Ferreteria.Domain\Ferreteria.Domain.csproj", "{9150FF67-7BC7-440B-997C-6899A679FB1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ferreteria.Application.UnitTest", "tests\Ferreteria.Application.UnitTest\Ferreteria.Application.UnitTest.csproj", "{A8083FD3-385E-4C68-B541-C9E5C0215903}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{15F6FC59-AAC4-54A0-792B-7B93FC8C81FD}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.gitattributes = .gitattributes
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +43,14 @@ Global
 		{0E0F290A-D97C-4EEE-B1DC-15151ED94E7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E0F290A-D97C-4EEE-B1DC-15151ED94E7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E0F290A-D97C-4EEE-B1DC-15151ED94E7F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C413D25-49F1-4CDF-B2B1-D9D43EF7FD5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C413D25-49F1-4CDF-B2B1-D9D43EF7FD5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C413D25-49F1-4CDF-B2B1-D9D43EF7FD5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C413D25-49F1-4CDF-B2B1-D9D43EF7FD5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9150FF67-7BC7-440B-997C-6899A679FB1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9150FF67-7BC7-440B-997C-6899A679FB1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9150FF67-7BC7-440B-997C-6899A679FB1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9150FF67-7BC7-440B-997C-6899A679FB1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8083FD3-385E-4C68-B541-C9E5C0215903}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8083FD3-385E-4C68-B541-C9E5C0215903}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8083FD3-385E-4C68-B541-C9E5C0215903}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8083FD3-385E-4C68-B541-C9E5C0215903}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +59,7 @@ Global
 		{FE5D0BE2-CA62-4B87-A2EA-05EBB3A3178C} = {92331237-F817-4CC5-B55B-0C4F995F51E3}
 		{F9B1471E-8C9C-4225-97A4-31000D7DEF92} = {92331237-F817-4CC5-B55B-0C4F995F51E3}
 		{0E0F290A-D97C-4EEE-B1DC-15151ED94E7F} = {92331237-F817-4CC5-B55B-0C4F995F51E3}
-		{0C413D25-49F1-4CDF-B2B1-D9D43EF7FD5D} = {92331237-F817-4CC5-B55B-0C4F995F51E3}
+		{9150FF67-7BC7-440B-997C-6899A679FB1D} = {92331237-F817-4CC5-B55B-0C4F995F51E3}
+		{A8083FD3-385E-4C68-B541-C9E5C0215903} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal
