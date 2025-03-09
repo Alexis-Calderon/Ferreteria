@@ -10,4 +10,13 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../Ferreteria.Application/Ferreteria.Application.csproj" />
+    <ProjectReference Include="../Ferreteria.Infrastructure/Ferreteria.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers/" />
+  </ItemGroup>
+
 </Project>
