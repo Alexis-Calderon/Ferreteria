@@ -21,11 +21,12 @@
 
   <ItemGroup>
     <Folder Include="BackgroundServices/" />
+    <Folder Include="Migrations/" />
     <Folder Include="Repositories/" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ferreteria.Core\Ferreteria.Core.csproj" />
+    <ProjectReference Include="../Ferreteria.Application/Ferreteria.Application.csproj" />
   </ItemGroup>
 
 </Project>
