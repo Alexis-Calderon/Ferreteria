@@ -14,4 +14,8 @@
     <Folder Include="Services/" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../Ferreteria.Core/Ferreteria.Core.csproj" />
+  </ItemGroup>
+
 </Project>
