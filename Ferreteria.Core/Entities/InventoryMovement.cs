@@ -10,5 +10,10 @@ public class InventoryMovement
     public int Quantity { get; set; }
     public DateTime MovementDate { get; set; }
     public string? Reference { get; set; }
-    public virtual Product? ProductNavigation { get; set; }
+    public int? UpdateBy { get; set; }
+    public DateTime UpdateAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsDeleted { get; set; }
+
+    public virtual Product? IdProductNavigation { get; set; }
 }

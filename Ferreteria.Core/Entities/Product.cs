@@ -14,7 +14,10 @@ public class Product
     public int Stock { get; set; }
     public string? MeasurementUnit { get; set; }
     public int? IdSupplier { get; set; }
+    public int? UpdateBy { get; set; }
+    public DateTime UpdateAt { get; set; }
     public DateTime CreatedAt { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual Supplier? IdSupplierNavigation { get; set; }
     public virtual Category? IdCategoryNavigation { get; set; }

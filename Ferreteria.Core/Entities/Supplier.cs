@@ -11,6 +11,10 @@ public class Supplier
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public string? Address { get; set; }
+    public int? UpdateBy { get; set; }
+    public DateTime UpdateAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = [];
     public virtual ICollection<Inventory> Inventories { get; set; } = [];

@@ -11,7 +11,10 @@ public class Client
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public string? Address { get; set; }
-    public DateTime? CreatedAt { get; set; }
+    public int? UpdateBy { get; set; }
+    public DateTime UpdateAt { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual ICollection<Sale> Sales { get; set; } = [];
 }
