@@ -1,4 +1,4 @@
-using Ferreteria.Core.Entities;
+using Ferreteria.Domain.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -6,15 +6,6 @@ namespace Ferreteria.Infrastructure.Context;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
 {
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlite("Data Source=Ferreteria.db");
-        }
-        base.OnConfiguring(optionsBuilder);
-    }
-
     public DbSet<Category> Categories { get; set; }
     public DbSet<Client> Clients { get; set; }
     public DbSet<Employee> Employees { get; set; }
@@ -32,9 +23,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Category>(entity =>
         {
             entity.ToTable("category");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdCategory);
-            entity.Property(e => e.IdCategory).HasColumnName("id_category").ValueGeneratedOnAdd().IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Name);
             entity.Property(e => e.Name).HasColumnName("name").HasColumnType("TEXT").HasMaxLength(100).IsRequired();
             entity.Property(e => e.Description).HasColumnName("description").HasColumnType("TEXT").HasMaxLength(255).IsRequired();
             entity.Property(e => e.UpdateBy).HasColumnName("update_by").HasColumnType("INTEGER");
@@ -46,11 +36,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Client>(entity =>
         {
             entity.ToTable("client");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdClient);
-            entity.Property(e => e.IdClient).HasColumnName("id_client").ValueGeneratedOnAdd().IsRequired();
-            entity.Property(e => e.FirstName).HasColumnName("first_name").HasColumnType("TEXT").HasMaxLength(50).IsRequired();
-            entity.Property(e => e.LastName).HasColumnName("last_name").HasColumnType("TEXT").HasMaxLength(50);
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Rut);
+            entity.Property(e => e.Rut).HasColumnName("rut").HasColumnType("TEXT").HasMaxLength(15).IsRequired();
+            entity.Property(e => e.Name).HasColumnName("name").HasColumnType("TEXT").HasMaxLength(100).IsRequired();
             entity.Property(e => e.Phone).HasColumnName("phone").HasColumnType("NUMERIC");
             entity.Property(e => e.Email).HasColumnName("email").HasColumnType("TEXT").HasMaxLength(100);
             entity.Property(e => e.Address).HasColumnName("address").HasColumnType("TEXT").HasMaxLength(255);
@@ -63,10 +52,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Employee>(entity =>
         {
             entity.ToTable("employee");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdEmployee);
-            entity.Property(e => e.IdEmployee).HasColumnName("id_employee").ValueGeneratedOnAdd().IsRequired();
-            entity.Property(e => e.IdUser).HasColumnName("id_user").HasColumnType("INTEGER").IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.UserRut).HasColumnName("user_rut").HasColumnType("TEXT").HasMaxLength(15).IsRequired();
             entity.Property(e => e.JobPosition).HasColumnName("job_position").HasColumnType("TEXT").HasMaxLength(20);
             entity.Property(e => e.Phone).HasColumnName("phone").HasColumnType("TEXT").HasMaxLength(15);
             entity.Property(e => e.HiringDate).HasColumnName("hiring_date").HasColumnType("TEXT");
@@ -75,8 +64,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasColumnType("INTEGER").HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.IdUserNavigation).WithOne(p => p.IdEmployeeNavigation)
-                .HasForeignKey<Employee>(d => d.IdUser)
+            entity.HasOne(d => d.UserRutNavigation).WithOne(p => p.EmployeeIdNavigation)
+                .HasForeignKey<Employee>(d => d.UserRut)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_employee_user");
         });
@@ -84,18 +73,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Inventory>(entity =>
         {
             entity.ToTable("inventory");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdInventory);
-            entity.Property(e => e.IdInventory).HasColumnName("id_inventory").ValueGeneratedOnAdd().IsRequired();
-            entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.ProductCode).HasColumnName("product_code").HasColumnType("TEXT").HasMaxLength(20).IsRequired();
             entity.Property(e => e.CurrentStock).HasColumnName("current_stock").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.UpdateBy).HasColumnName("update_by").HasColumnType("INTEGER");
             entity.Property(e => e.UpdateAt).HasColumnName("update_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasColumnType("INTEGER").HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.Inventories)
-                .HasForeignKey(d => d.IdProduct)
+            entity.HasOne(d => d.ProductCodeNavigation).WithMany(p => p.Inventories)
+                .HasForeignKey(d => d.ProductCode)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_inventory_product");
         });
@@ -103,10 +92,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<InventoryMovement>(entity =>
         {
             entity.ToTable("inventory_movement");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdInventoryMovement);
-            entity.Property(e => e.IdInventoryMovement).HasColumnName("id_inventory_movement").ValueGeneratedOnAdd().IsRequired();
-            entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.ProductCode).HasColumnName("product_code").HasColumnType("TEXT").HasMaxLength(20).IsRequired();
             entity.Property(e => e.MovementType).HasColumnName("movement_type").HasColumnType("TEXT").HasMaxLength(20).IsRequired();
             entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.MovementDate).HasColumnName("movement_date").HasColumnType("TEXT").IsRequired();
@@ -117,7 +106,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasColumnType("INTEGER").HasDefaultValueSql("0");
 
             entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.InventoryMovements)
-                .HasForeignKey(d => d.IdProduct)
+                .HasForeignKey(d => d.ProductCode)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_inventory_movement_product");
         });
@@ -125,29 +114,29 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Product>(entity =>
         {
             entity.ToTable("product");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdProduct);
-            entity.Property(e => e.IdProduct).HasColumnName("id_product").ValueGeneratedOnAdd().IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Code);
+            entity.Property(e => e.Code).HasColumnName("code").HasColumnType("TEXT").HasMaxLength(20).IsRequired();
             entity.Property(e => e.Name).HasColumnName("name").HasColumnType("TEXT").HasMaxLength(100).IsRequired();
             entity.Property(e => e.Description).HasColumnName("description").HasColumnType("TEXT").HasMaxLength(255);
-            entity.Property(e => e.IdCategory).HasColumnName("id_category").HasColumnType("INTEGER");
+            entity.Property(e => e.CategoryName).HasColumnName("category_name").HasColumnType("TEXT").HasMaxLength(100);
             entity.Property(e => e.Brand).HasColumnName("brand").HasColumnType("TEXT").HasMaxLength(20);
             entity.Property(e => e.Price).HasColumnName("price").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.Stock).HasColumnName("stock").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.MeasurementUnit).HasColumnName("measurement_unit").HasColumnType("TEXT").HasMaxLength(10);
-            entity.Property(e => e.IdSupplier).HasColumnName("id_supplier").HasColumnType("INTEGER");
+            entity.Property(e => e.SupplierRut).HasColumnName("supplier_rut").HasColumnType("TEXT").HasMaxLength(15);
             entity.Property(e => e.UpdateBy).HasColumnName("update_by").HasColumnType("INTEGER");
             entity.Property(e => e.UpdateAt).HasColumnName("update_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasColumnType("INTEGER").HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.IdCategoryNavigation).WithMany(p => p.Products)
-                .HasForeignKey(d => d.IdCategory)
+            entity.HasOne(d => d.CategoryNameNavigation).WithMany(p => p.Products)
+                .HasForeignKey(d => d.CategoryName)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_product_category");
 
-            entity.HasOne(d => d.IdSupplierNavigation).WithMany(p => p.Products)
-                .HasForeignKey(d => d.IdSupplier)
+            entity.HasOne(d => d.SupplierRutNavigation).WithMany(p => p.Products)
+                .HasForeignKey(d => d.SupplierRut)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_product_supplier");
         });
@@ -155,24 +144,24 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Purchase>(entity =>
         {
             entity.ToTable("purchase");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdPurchase);
-            entity.Property(e => e.IdPurchase).HasColumnName("id_purchase").ValueGeneratedOnAdd().IsRequired();
-            entity.Property(e => e.IdSupplier).HasColumnName("id_supplier").HasColumnType("INTEGER");
-            entity.Property(e => e.IdEmployee).HasColumnName("id_employee").HasColumnType("INTEGER");
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.SupplierRut).HasColumnName("supplier_rut").HasColumnType("TEXT").HasMaxLength(15).IsRequired();
+            entity.Property(e => e.EmployeeId).HasColumnName("employee_id").HasColumnType("INTEGER");
             entity.Property(e => e.Total).HasColumnName("total").HasColumnType("NUMERIC");
             entity.Property(e => e.UpdateBy).HasColumnName("update_by").HasColumnType("INTEGER");
             entity.Property(e => e.UpdateAt).HasColumnName("update_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasColumnType("INTEGER").HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.IdEmployeeNavigation).WithMany(p => p.Purchases)
-                .HasForeignKey(d => d.IdEmployee)
+            entity.HasOne(d => d.EmployeeIdNavigation).WithMany(p => p.Purchases)
+                .HasForeignKey(d => d.EmployeeId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_purchase_employee");
 
-            entity.HasOne(d => d.IdSupplierNavigation).WithMany(p => p.Purchases)
-                .HasForeignKey(d => d.IdSupplier)
+            entity.HasOne(d => d.SupplierRutNavigation).WithMany(p => p.Purchases)
+                .HasForeignKey(d => d.SupplierRut)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_purchase_supplier");
         });
@@ -180,11 +169,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<PurchaseProduct>(entity =>
         {
             entity.ToTable("purchase_product");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdPurchaseProduct);
-            entity.Property(e => e.IdPurchaseProduct).HasColumnName("id_purchase_product").ValueGeneratedOnAdd().IsRequired();
-            entity.Property(e => e.IdPurchase).HasColumnName("id_purchase").HasColumnType("INTEGER").IsRequired();
-            entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.PurchaseId).HasColumnName("purchase_id").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.ProductCode).HasColumnName("product_code").HasColumnType("TEXT").HasMaxLength(20).IsRequired();
             entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.UnitPrice).HasColumnName("unit_price").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.Subtotal).HasColumnName("subtotal").HasColumnType("NUMERIC").IsRequired();
@@ -193,13 +182,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasColumnType("INTEGER").HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.PurchaseProducts)
-                .HasForeignKey(d => d.IdProduct)
+            entity.HasOne(d => d.ProductCodeNavigation).WithMany(p => p.PurchaseProducts)
+                .HasForeignKey(d => d.ProductCode)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_purchase_product_product");
 
-            entity.HasOne(d => d.IdPurchaseNavigation).WithMany(p => p.PurchaseProducts)
-                .HasForeignKey(d => d.IdPurchase)
+            entity.HasOne(d => d.PurchaseIdNavigation).WithMany(p => p.PurchaseProducts)
+                .HasForeignKey(d => d.PurchaseId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_purchase_product_purchase");
         });
@@ -207,24 +196,24 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Sale>(entity =>
         {
             entity.ToTable("sale");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdSale);
-            entity.Property(e => e.IdSale).HasColumnName("id_sale").ValueGeneratedOnAdd().IsRequired();
-            entity.Property(e => e.IdClient).HasColumnName("id_client").HasColumnType("INTEGER");
-            entity.Property(e => e.IdEmployee).HasColumnName("id_employee").HasColumnType("INTEGER");
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.ClientRut).HasColumnName("client_rut").HasColumnType("TEXT").HasMaxLength(15);
+            entity.Property(e => e.EmployeeId).HasColumnName("employee_id").HasColumnType("INTEGER");
             entity.Property(e => e.Total).HasColumnName("total").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.UpdateBy).HasColumnName("update_by").HasColumnType("INTEGER");
             entity.Property(e => e.UpdateAt).HasColumnName("update_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasColumnType("INTEGER").HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.IdClientNavigation).WithMany(p => p.Sales)
-                .HasForeignKey(d => d.IdClient)
+            entity.HasOne(d => d.ClientRutNavigation).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.ClientRut)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_sale_client");
 
-            entity.HasOne(d => d.IdEmployeeNavigation).WithMany(p => p.Sales)
-                .HasForeignKey(d => d.IdEmployee)
+            entity.HasOne(d => d.EmployeeIdNavigation).WithMany(p => p.Sales)
+                .HasForeignKey(d => d.EmployeeId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_sale_employee");
         });
@@ -232,11 +221,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<SaleProduct>(entity =>
         {
             entity.ToTable("sale_product");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdSaleProduct);
-            entity.Property(e => e.IdSaleProduct).HasColumnName("id_sale_product").ValueGeneratedOnAdd().IsRequired();
-            entity.Property(e => e.IdSale).HasColumnName("id_sale").HasColumnType("INTEGER").IsRequired();
-            entity.Property(e => e.IdProduct).HasColumnName("id_product").HasColumnType("INTEGER").IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).HasColumnName("id").ValueGeneratedOnAdd().IsRequired();
+            entity.Property(e => e.SaleId).HasColumnName("sale_id").HasColumnType("INTEGER").IsRequired();
+            entity.Property(e => e.ProductCode).HasColumnName("product_code").HasColumnType("TEXT").HasMaxLength(20).IsRequired();
             entity.Property(e => e.Quantity).HasColumnName("quantity").HasColumnType("INTEGER").IsRequired();
             entity.Property(e => e.UnitPrice).HasColumnName("unit_price").HasColumnType("NUMERIC").IsRequired();
             entity.Property(e => e.Subtotal).HasColumnName("subtotal").HasColumnType("NUMERIC").IsRequired();
@@ -245,13 +234,13 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(e => e.CreatedAt).HasColumnName("create_at").HasColumnType("TEXT").HasDefaultValueSql("DATETIME('now')");
             entity.Property(e => e.IsDeleted).HasColumnName("is_deleted").HasColumnType("INTEGER").HasDefaultValueSql("0");
 
-            entity.HasOne(d => d.IdProductNavigation).WithMany(p => p.SaleProducts)
-                .HasForeignKey(d => d.IdProduct)
+            entity.HasOne(d => d.ProductCodeNavigation).WithMany(p => p.SaleProducts)
+                .HasForeignKey(d => d.ProductCode)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_sale_product_product");
 
-            entity.HasOne(d => d.IdSaleNavigation).WithMany(p => p.SaleProducts)
-                .HasForeignKey(d => d.IdSale)
+            entity.HasOne(d => d.SaleIdNavigation).WithMany(p => p.SaleProducts)
+                .HasForeignKey(d => d.SaleId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .HasConstraintName("FK_sale_product_sale");
         });
@@ -259,9 +248,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<Supplier>(entity =>
         {
             entity.ToTable("supplier");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdSupplier);
-            entity.Property(e => e.IdSupplier).HasColumnName("id_supplier").ValueGeneratedOnAdd().IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Rut);
+            entity.Property(e => e.Rut).HasColumnName("rut").HasColumnType("TEXT").HasMaxLength(15).IsRequired();
             entity.Property(e => e.Name).HasColumnName("name").HasColumnType("TEXT").HasMaxLength(100).IsRequired();
             entity.Property(e => e.Phone).HasColumnName("phone").HasColumnType("TEXT").HasMaxLength(15);
             entity.Property(e => e.Email).HasColumnName("email").HasColumnType("TEXT").HasMaxLength(100);
@@ -275,9 +264,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         modelBuilder.Entity<User>(entity =>
         {
             entity.ToTable("user");
-            entity.HasQueryFilter(e => !e.IsDeleted);
-            entity.HasKey(e => e.IdUser);
-            entity.Property(e => e.IdUser).HasColumnName("id_user").ValueGeneratedOnAdd().IsRequired();
+            entity.HasQueryFilter(e => !e.IsDeleted ?? false);
+            entity.HasKey(e => e.Rut);
+            entity.Property(e => e.Rut).HasColumnName("rut").HasColumnType("TEXT").HasMaxLength(15).IsRequired();
             entity.Property(e => e.FirstName).HasColumnName("first_name").HasColumnType("TEXT").HasMaxLength(50).IsRequired();
             entity.Property(e => e.LastName).HasColumnName("last_name").HasColumnType("TEXT").HasMaxLength(50).IsRequired();
             entity.Property(e => e.Password).HasColumnName("password").HasColumnType("TEXT").HasMaxLength(255).IsRequired();
