@@ -1,16 +1,14 @@
-using System;
-
-namespace Ferreteria.Core.Entities;
+namespace Ferreteria.Domain.Entities;
 
 public class Inventory
 {
-    public int IdInventory { get; set; }
-    public int IdProduct { get; set; }
+    public int Id { get; set; }
+    public string ProductCode { get; set; } = null!;
     public int CurrentStock { get; set; }
-    public int? UpdateBy { get; set; }
-    public DateTime UpdateAt { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public bool IsDeleted { get; set; }
+    public string? UpdateBy { get; set; }
+    public DateTime? UpdateAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
+    public bool? IsDeleted { get; set; }
 
-    public virtual Product? IdProductNavigation { get; set; }
+    public virtual Product? ProductCodeNavigation { get; set; }
 }
