@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ferreteria.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250309003459_InitialCreate")]
+    [Migration("20250310010151_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,14 +20,14 @@ namespace Ferreteria.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Category", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Category", b =>
                 {
-                    b.Property<int>("IdCategory")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_category");
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("name");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
@@ -39,7 +39,51 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("description");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("is_deleted")
+                        .HasDefaultValueSql("0");
+
+                    b.Property<DateTime?>("UpdateAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("update_at")
+                        .HasDefaultValueSql("DATETIME('now')");
+
+                    b.Property<string>("UpdateBy")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("update_by");
+
+                    b.HasKey("Name");
+
+                    b.ToTable("category", (string)null);
+                });
+
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Client", b =>
+                {
+                    b.Property<string>("Rut")
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("rut");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("address");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("create_at")
+                        .HasDefaultValueSql("DATETIME('now')");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("email");
+
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
@@ -51,88 +95,33 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("name");
 
-                    b.Property<DateTime>("UpdateAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("update_at")
-                        .HasDefaultValueSql("DATETIME('now')");
-
-                    b.Property<int?>("UpdateBy")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("update_by");
-
-                    b.HasKey("IdCategory");
-
-                    b.ToTable("category", (string)null);
-                });
-
-            modelBuilder.Entity("Ferreteria.Core.Entities.Client", b =>
-                {
-                    b.Property<int>("IdClient")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_client");
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT")
-                        .HasColumnName("address");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("create_at")
-                        .HasDefaultValueSql("DATETIME('now')");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT")
-                        .HasColumnName("email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT")
-                        .HasColumnName("first_name");
-
-                    b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("is_deleted")
-                        .HasDefaultValueSql("0");
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT")
-                        .HasColumnName("last_name");
-
                     b.Property<string>("Phone")
                         .HasColumnType("NUMERIC")
                         .HasColumnName("phone");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdClient");
+                    b.HasKey("Rut");
 
                     b.ToTable("client", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Employee", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Employee", b =>
                 {
-                    b.Property<int>("IdEmployee")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_employee");
+                        .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
@@ -142,11 +131,7 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("hiring_date");
 
-                    b.Property<int>("IdUser")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_user");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
@@ -162,32 +147,38 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("phone");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdEmployee");
+                    b.Property<string>("UserRut")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("user_rut");
 
-                    b.HasIndex("IdUser")
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserRut")
                         .IsUnique();
 
                     b.ToTable("employee", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Inventory", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Inventory", b =>
                 {
-                    b.Property<int>("IdInventory")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_inventory");
+                        .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
@@ -197,56 +188,54 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("current_stock");
 
-                    b.Property<int>("IdProduct")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_product");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
                         .HasDefaultValueSql("0");
 
-                    b.Property<int?>("SupplierIdSupplier")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("ProductCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("product_code");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<string>("SupplierRut")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdInventory");
+                    b.HasKey("Id");
 
-                    b.HasIndex("IdProduct");
+                    b.HasIndex("ProductCode");
 
-                    b.HasIndex("SupplierIdSupplier");
+                    b.HasIndex("SupplierRut");
 
                     b.ToTable("inventory", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.InventoryMovement", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.InventoryMovement", b =>
                 {
-                    b.Property<int>("IdInventoryMovement")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_inventory_movement");
+                        .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int>("IdProduct")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_product");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
@@ -262,6 +251,12 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("movement_type");
 
+                    b.Property<string>("ProductCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("product_code");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER")
                         .HasColumnName("quantity");
@@ -271,36 +266,41 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("reference");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdInventoryMovement");
+                    b.HasKey("Id");
 
-                    b.HasIndex("IdProduct");
+                    b.HasIndex("ProductCode");
 
                     b.ToTable("inventory_movement", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Product", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Product", b =>
                 {
-                    b.Property<int>("IdProduct")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_product");
+                    b.Property<string>("Code")
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("code");
 
                     b.Property<string>("Brand")
                         .HasMaxLength(20)
                         .HasColumnType("TEXT")
                         .HasColumnName("brand");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<string>("CategoryName")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("category_name");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
@@ -311,15 +311,7 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("description");
 
-                    b.Property<int?>("IdCategory")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_category");
-
-                    b.Property<int?>("IdSupplier")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_supplier");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
@@ -344,101 +336,110 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("stock");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<string>("SupplierRut")
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("supplier_rut");
+
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdProduct");
+                    b.HasKey("Code");
 
-                    b.HasIndex("IdCategory");
+                    b.HasIndex("CategoryName");
 
-                    b.HasIndex("IdSupplier");
+                    b.HasIndex("SupplierRut");
 
                     b.ToTable("product", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Purchase", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Purchase", b =>
                 {
-                    b.Property<int>("IdPurchase")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_purchase");
+                        .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("IdEmployee")
+                    b.Property<int?>("EmployeeId")
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_employee");
+                        .HasColumnName("employee_id");
 
-                    b.Property<int?>("IdSupplier")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_supplier");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
                         .HasDefaultValueSql("0");
+
+                    b.Property<string>("SupplierRut")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("supplier_rut");
 
                     b.Property<int?>("Total")
                         .HasColumnType("NUMERIC")
                         .HasColumnName("total");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdPurchase");
+                    b.HasKey("Id");
 
-                    b.HasIndex("IdEmployee");
+                    b.HasIndex("EmployeeId");
 
-                    b.HasIndex("IdSupplier");
+                    b.HasIndex("SupplierRut");
 
                     b.ToTable("purchase", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.PurchaseProduct", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.PurchaseProduct", b =>
                 {
-                    b.Property<int>("IdPurchaseProduct")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_purchase_product");
+                        .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int>("IdProduct")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_product");
-
-                    b.Property<int>("IdPurchase")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_purchase");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
                         .HasDefaultValueSql("0");
+
+                    b.Property<string>("ProductCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("product_code");
+
+                    b.Property<int>("PurchaseId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("purchase_id");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER")
@@ -452,47 +453,48 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("NUMERIC")
                         .HasColumnName("unit_price");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdPurchaseProduct");
+                    b.HasKey("Id");
 
-                    b.HasIndex("IdProduct");
+                    b.HasIndex("ProductCode");
 
-                    b.HasIndex("IdPurchase");
+                    b.HasIndex("PurchaseId");
 
                     b.ToTable("purchase_product", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Sale", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Sale", b =>
                 {
-                    b.Property<int>("IdSale")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_sale");
+                        .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<string>("ClientRut")
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("client_rut");
+
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("IdClient")
+                    b.Property<int?>("EmployeeId")
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_client");
+                        .HasColumnName("employee_id");
 
-                    b.Property<int?>("IdEmployee")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_employee");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
@@ -508,55 +510,57 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("NUMERIC")
                         .HasColumnName("total");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdSale");
+                    b.HasKey("Id");
 
-                    b.HasIndex("IdClient");
+                    b.HasIndex("ClientRut");
 
-                    b.HasIndex("IdEmployee");
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("sale", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.SaleProduct", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.SaleProduct", b =>
                 {
-                    b.Property<int>("IdSaleProduct")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
-                        .HasColumnName("id_sale_product");
+                        .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int>("IdProduct")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_product");
-
-                    b.Property<int>("IdSale")
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_sale");
-
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
                         .HasDefaultValueSql("0");
 
+                    b.Property<string>("ProductCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("product_code");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER")
                         .HasColumnName("quantity");
+
+                    b.Property<int>("SaleId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("sale_id");
 
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("NUMERIC")
@@ -566,31 +570,31 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("NUMERIC")
                         .HasColumnName("unit_price");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdSaleProduct");
+                    b.HasKey("Id");
 
-                    b.HasIndex("IdProduct");
+                    b.HasIndex("ProductCode");
 
-                    b.HasIndex("IdSale");
+                    b.HasIndex("SaleId");
 
                     b.ToTable("sale_product", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Supplier", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Supplier", b =>
                 {
-                    b.Property<int>("IdSupplier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_supplier");
+                    b.Property<string>("Rut")
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("rut");
 
                     b.Property<string>("Address")
                         .HasMaxLength(255)
@@ -600,7 +604,7 @@ namespace Ferreteria.Infrastructure.Migrations
                     b.Property<string>("Contact")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
@@ -611,7 +615,7 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("email");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
@@ -628,29 +632,29 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("phone");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdSupplier");
+                    b.HasKey("Rut");
 
                     b.ToTable("supplier", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.User", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("IdUser")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasColumnName("id_user");
+                    b.Property<string>("Rut")
+                        .HasMaxLength(15)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("rut");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("create_at")
@@ -668,7 +672,7 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("first_name");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool?>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("is_deleted")
@@ -686,54 +690,54 @@ namespace Ferreteria.Infrastructure.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("password");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime?>("UpdateAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
                         .HasColumnName("update_at")
                         .HasDefaultValueSql("DATETIME('now')");
 
-                    b.Property<int?>("UpdateBy")
+                    b.Property<string>("UpdateBy")
                         .HasColumnType("INTEGER")
                         .HasColumnName("update_by");
 
-                    b.HasKey("IdUser");
+                    b.HasKey("Rut");
 
                     b.ToTable("user", (string)null);
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Employee", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Employee", b =>
                 {
-                    b.HasOne("Ferreteria.Core.Entities.User", "IdUserNavigation")
-                        .WithOne("IdEmployeeNavigation")
-                        .HasForeignKey("Ferreteria.Core.Entities.Employee", "IdUser")
+                    b.HasOne("Ferreteria.Domain.Entities.User", "UserRutNavigation")
+                        .WithOne("EmployeeIdNavigation")
+                        .HasForeignKey("Ferreteria.Domain.Entities.Employee", "UserRut")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_employee_user");
 
-                    b.Navigation("IdUserNavigation");
+                    b.Navigation("UserRutNavigation");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Inventory", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Inventory", b =>
                 {
-                    b.HasOne("Ferreteria.Core.Entities.Product", "IdProductNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Product", "ProductCodeNavigation")
                         .WithMany("Inventories")
-                        .HasForeignKey("IdProduct")
+                        .HasForeignKey("ProductCode")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_inventory_product");
 
-                    b.HasOne("Ferreteria.Core.Entities.Supplier", null)
+                    b.HasOne("Ferreteria.Domain.Entities.Supplier", null)
                         .WithMany("Inventories")
-                        .HasForeignKey("SupplierIdSupplier");
+                        .HasForeignKey("SupplierRut");
 
-                    b.Navigation("IdProductNavigation");
+                    b.Navigation("ProductCodeNavigation");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.InventoryMovement", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.InventoryMovement", b =>
                 {
-                    b.HasOne("Ferreteria.Core.Entities.Product", "IdProductNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Product", "IdProductNavigation")
                         .WithMany("InventoryMovements")
-                        .HasForeignKey("IdProduct")
+                        .HasForeignKey("ProductCode")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_inventory_movement_product");
@@ -741,122 +745,123 @@ namespace Ferreteria.Infrastructure.Migrations
                     b.Navigation("IdProductNavigation");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Product", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("Ferreteria.Core.Entities.Category", "IdCategoryNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Category", "CategoryNameNavigation")
                         .WithMany("Products")
-                        .HasForeignKey("IdCategory")
+                        .HasForeignKey("CategoryName")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_product_category");
 
-                    b.HasOne("Ferreteria.Core.Entities.Supplier", "IdSupplierNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Supplier", "SupplierRutNavigation")
                         .WithMany("Products")
-                        .HasForeignKey("IdSupplier")
+                        .HasForeignKey("SupplierRut")
                         .HasConstraintName("FK_product_supplier");
 
-                    b.Navigation("IdCategoryNavigation");
+                    b.Navigation("CategoryNameNavigation");
 
-                    b.Navigation("IdSupplierNavigation");
+                    b.Navigation("SupplierRutNavigation");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Purchase", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Purchase", b =>
                 {
-                    b.HasOne("Ferreteria.Core.Entities.Employee", "IdEmployeeNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Employee", "EmployeeIdNavigation")
                         .WithMany("Purchases")
-                        .HasForeignKey("IdEmployee")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_purchase_employee");
 
-                    b.HasOne("Ferreteria.Core.Entities.Supplier", "IdSupplierNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Supplier", "SupplierRutNavigation")
                         .WithMany("Purchases")
-                        .HasForeignKey("IdSupplier")
+                        .HasForeignKey("SupplierRut")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired()
                         .HasConstraintName("FK_purchase_supplier");
 
-                    b.Navigation("IdEmployeeNavigation");
+                    b.Navigation("EmployeeIdNavigation");
 
-                    b.Navigation("IdSupplierNavigation");
+                    b.Navigation("SupplierRutNavigation");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.PurchaseProduct", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.PurchaseProduct", b =>
                 {
-                    b.HasOne("Ferreteria.Core.Entities.Product", "IdProductNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Product", "ProductCodeNavigation")
                         .WithMany("PurchaseProducts")
-                        .HasForeignKey("IdProduct")
+                        .HasForeignKey("ProductCode")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_purchase_product_product");
 
-                    b.HasOne("Ferreteria.Core.Entities.Purchase", "IdPurchaseNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Purchase", "PurchaseIdNavigation")
                         .WithMany("PurchaseProducts")
-                        .HasForeignKey("IdPurchase")
+                        .HasForeignKey("PurchaseId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_purchase_product_purchase");
 
-                    b.Navigation("IdProductNavigation");
+                    b.Navigation("ProductCodeNavigation");
 
-                    b.Navigation("IdPurchaseNavigation");
+                    b.Navigation("PurchaseIdNavigation");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Sale", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Sale", b =>
                 {
-                    b.HasOne("Ferreteria.Core.Entities.Client", "IdClientNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Client", "ClientRutNavigation")
                         .WithMany("Sales")
-                        .HasForeignKey("IdClient")
+                        .HasForeignKey("ClientRut")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_sale_client");
 
-                    b.HasOne("Ferreteria.Core.Entities.Employee", "IdEmployeeNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Employee", "EmployeeIdNavigation")
                         .WithMany("Sales")
-                        .HasForeignKey("IdEmployee")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("FK_sale_employee");
 
-                    b.Navigation("IdClientNavigation");
+                    b.Navigation("ClientRutNavigation");
 
-                    b.Navigation("IdEmployeeNavigation");
+                    b.Navigation("EmployeeIdNavigation");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.SaleProduct", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.SaleProduct", b =>
                 {
-                    b.HasOne("Ferreteria.Core.Entities.Product", "IdProductNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Product", "ProductCodeNavigation")
                         .WithMany("SaleProducts")
-                        .HasForeignKey("IdProduct")
+                        .HasForeignKey("ProductCode")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_sale_product_product");
 
-                    b.HasOne("Ferreteria.Core.Entities.Sale", "IdSaleNavigation")
+                    b.HasOne("Ferreteria.Domain.Entities.Sale", "SaleIdNavigation")
                         .WithMany("SaleProducts")
-                        .HasForeignKey("IdSale")
+                        .HasForeignKey("SaleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_sale_product_sale");
 
-                    b.Navigation("IdProductNavigation");
+                    b.Navigation("ProductCodeNavigation");
 
-                    b.Navigation("IdSaleNavigation");
+                    b.Navigation("SaleIdNavigation");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Category", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Client", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Client", b =>
                 {
                     b.Navigation("Sales");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Employee", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Employee", b =>
                 {
                     b.Navigation("Purchases");
 
                     b.Navigation("Sales");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Product", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Product", b =>
                 {
                     b.Navigation("Inventories");
 
@@ -867,17 +872,17 @@ namespace Ferreteria.Infrastructure.Migrations
                     b.Navigation("SaleProducts");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Purchase", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Purchase", b =>
                 {
                     b.Navigation("PurchaseProducts");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Sale", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Sale", b =>
                 {
                     b.Navigation("SaleProducts");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.Supplier", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.Supplier", b =>
                 {
                     b.Navigation("Inventories");
 
@@ -886,9 +891,9 @@ namespace Ferreteria.Infrastructure.Migrations
                     b.Navigation("Purchases");
                 });
 
-            modelBuilder.Entity("Ferreteria.Core.Entities.User", b =>
+            modelBuilder.Entity("Ferreteria.Domain.Entities.User", b =>
                 {
-                    b.Navigation("IdEmployeeNavigation");
+                    b.Navigation("EmployeeIdNavigation");
                 });
 #pragma warning restore 612, 618
         }
